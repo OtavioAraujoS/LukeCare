@@ -4,21 +4,21 @@ export function RemedyHeader({
   medicationsLength: number;
 }) {
   return (
-    <header className="flex justify-between items-start mb-12">
+    <header className="flex flex-col md:flex-row justify-between items-start gap-8 mb-12">
       <div className="max-w-xl">
         <span className="text-[10px] font-bold text-gray-400 tracking-[0.2em] uppercase mb-2 block">
-          Catalogo de Remedios
+          Catálogo de Remédios
         </span>
-        <h1 className="text-5xl font-extrabold tracking-tight mb-4 text-[#3B362E]">
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-[#3B362E]">
           Biblioteca
         </h1>
-        <p className="text-gray-500 font-medium leading-relaxed">
+        <p className="text-gray-500 font-medium leading-relaxed text-sm md:text-base">
           Explore e gerencie os medicamentos e suplementos que fazem parte da
           rotina diária do Luke.
         </p>
       </div>
 
-      <div className="bg-[#F1DECE] rounded-2xl p-6 min-w-40 text-center shadow-sm">
+      <div className="bg-[#F1DECE] rounded-2xl p-6 w-full md:w-auto md:min-w-40 text-center shadow-sm">
         <span className="block text-4xl font-extrabold text-[#3B362E] mb-1">
           {medicationsLength}
         </span>
