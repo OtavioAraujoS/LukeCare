@@ -34,6 +34,26 @@ export default function HistoryPage() {
     return groups;
   }, [activities, activeFilter]);
 
+  if (Object.keys(groupedActivities).length === 0) {
+    return (
+      <div className="h-screen px-16 py-12 max-w-5xl mx-auto w-full relative min-h-screen flex flex-col items-center justify-center gap-6">
+        <div className="size-40 p-4 rounded-full bg-[#F5F3ED] flex items-center justify-center">
+          <Pill size={24} className="text-[#65584D]" />
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <h2 className="text-xl font-bold text-[#3B362E]">
+            Nenhuma atividade registrada
+          </h2>
+          <p className="text-gray-400 text-center">
+            Parece que ainda não há registros de atividades relacionadas aos
+            remédios do Luke. Comece a adicionar atividades para acompanhar o
+            histórico completo!
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="px-16 py-12 max-w-5xl mx-auto w-full relative min-h-screen">
       <header className="mb-10">

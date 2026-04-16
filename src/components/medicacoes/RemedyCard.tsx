@@ -7,6 +7,24 @@ interface RemedyCardProps {
 }
 
 export function RemedyCard({ medications, removeMedication }: RemedyCardProps) {
+  if (medications.length === 0) {
+    return (
+      <div className="flex flex-col items-center gap-6">
+        <div className="size-20 p-4 rounded-full bg-[#F5F3ED] flex items-center justify-center">
+          <Pill size={24} className="text-[#65584D]" />
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <h2 className="text-xl font-bold text-[#3B362E]">
+            Nenhum remédio registrado
+          </h2>
+          <p className="text-gray-400 text-center">
+            Parece que ainda não há remédios registrados para o Luke. Comece a
+            adicionar remédios para acompanhar o ciclo diário de cuidados!
+          </p>
+        </div>
+      </div>
+    );
+  }
   return (
     <section>
       <div className="flex justify-between items-center mb-8">
