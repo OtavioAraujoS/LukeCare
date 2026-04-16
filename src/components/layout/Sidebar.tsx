@@ -1,10 +1,19 @@
 import { Book, Calendar, Clock, Plus } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 interface SidebarProps {
   setIsModalOpen: (open: boolean) => void;
 }
 
 export function Sidebar({ setIsModalOpen }: SidebarProps) {
+  const baseItemClass =
+    "group flex items-center gap-4 text-sm px-4 py-3 rounded-2xl transition-all duration-200 -mx-4";
+
+  const getLinkStyle = ({ isActive }: { isActive: boolean }) => {
+    return isActive
+      ? `${baseItemClass} font-extrabold text-[#3B362E] bg-gray-50` // Estilo Ativo
+      : `${baseItemClass} font-bold text-gray-400 hover:text-gray-800 hover:bg-gray-50/50`; // Estilo Inativo
+  };
   return (
     <aside className="w-72 flex flex-col border-r border-gray-100 p-8 pb-10">
       <h1 className="text-2xl font-extrabold tracking-tight mb-10 text-[#3B362E]">
@@ -26,15 +35,53 @@ export function Sidebar({ setIsModalOpen }: SidebarProps) {
       </div>
 
       <nav className="flex flex-col gap-6 flex-1">
-        <button className="flex items-center gap-4 text-sm font-extrabold text-[#3B362E] bg-gray-50 -mx-4 px-4 py-3 rounded-2xl">
-          <Calendar size={20} className="text-[#3B362E]" /> Cuidados de Hoje
-        </button>
-        <button className="flex items-center gap-4 text-sm font-bold text-gray-400 hover:text-gray-800 transition-colors">
-          <Book size={20} /> Biblioteca de Remédios
-        </button>
-        <button className="flex items-center gap-4 text-sm font-bold text-gray-400 hover:text-gray-800 transition-colors">
-          <Clock size={20} /> Histórico de Atividades
-        </button>
+        <NavLink to="/" className={getLinkStyle}>
+          {({ isActive }) => (
+            <>
+              <Calendar
+                size={20}
+                className={
+                  isActive
+                    ? "text-[#3B362E]"
+                    : "text-gray-400 group-hover:text-gray-800"
+                }
+              />
+              Cuidados de Hoje
+            </>
+          )}
+        </NavLink>
+
+        <NavLink to="/remedios" className={getLinkStyle}>
+          {({ isActive }) => (
+            <>
+              <Book
+                size={20}
+                className={
+                  isActive
+                    ? "text-[#3B362E]"
+                    : "text-gray-400 group-hover:text-gray-800"
+                }
+              />
+              Biblioteca de Remédios
+            </>
+          )}
+        </NavLink>
+
+        <NavLink to="/historico" className={getLinkStyle}>
+          {({ isActive }) => (
+            <>
+              <Clock
+                size={20}
+                className={
+                  isActive
+                    ? "text-[#3B362E]"
+                    : "text-gray-400 group-hover:text-gray-800"
+                }
+              />
+              Histórico de Atividades
+            </>
+          )}
+        </NavLink>
       </nav>
 
       <button
