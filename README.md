@@ -1,73 +1,55 @@
-# React + TypeScript + Vite
+# 🐶 LukeCare
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+O **LukeCare** é um dashboard moderno e intuitivo desenvolvido para gerir a rotina de medicação do Luke. O projeto foi construído para garantir que nenhuma dose seja esquecida, utilizando uma interface limpa e focada na experiência do utilizador, inspirada em sistemas de gestão de saúde de alta performance.
 
-Currently, two official plugins are available:
+## 🚀 Tecnologias
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Este projeto utiliza o que há de mais moderno no ecossistema de desenvolvimento front-end:
 
-## React Compiler
+- **[React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/):** Base para uma interface reativa e com tipagem segura.
+- **[Vite](https://vitejs.dev/):** Ferramenta de build de próxima geração para um desenvolvimento ultra-rápido.
+- **[Zustand](https://zustand-demo.pmnd.rs/):** Gestão de estado global leve e eficiente.
+- **[Tailwind CSS v4](https://tailwindcss.com/):** Estilização de última geração para um design fiel ao protótipo, sem overhead de configuração.
+- **[Lucide React](https://lucide.dev/):** Conjunto de ícones consistentes para uma melhor navegação visual.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Funcionalidades
 
-## Expanding the ESLint configuration
+- **Dashboard de Progresso:** Gráfico circular dinâmico que mostra a percentagem de conclusão das tarefas do dia.
+- **Gestão de Medicamentos:** Cadastro completo de remédios com nome, dosagem, horários e período de tratamento (início/fim).
+- **Checklist Diário:** Sistema de marcação simples para registar o que já foi ministrado.
+- **Persistência Local:** Os dados são armazenados diretamente no navegador através do `localStorage`, funcionando como uma base de dados JSON no front-end que persiste mesmo após recarregar a página.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📦 Estrutura do Projeto
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+O código está organizado de forma modular para facilitar a manutenção e escalabilidade:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+src/
+├── components/     # Componentes de UI (Modal, Gráfico, Listas)
+├── store/          # Lógica do Zustand e persistência de dados
+├── App.tsx         # Orquestrador do layout e dashboard principal
+└── index.css       # Configuração do Tailwind v4
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## ⚙️ Instalação e Configuração
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 1. Clonando o Repositório
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/OtavioAraujoS/LukeCare.git
+cd LukeCare
+```
+
+### 2. Instalando as Dependências
+
+Utilizando o Bun, a instalação é muito rápida:
+
+```bash
+pnpm install
+```
+
+### 3. Rodando o Projeto
+
+```bash
+pnpm dev
 ```
