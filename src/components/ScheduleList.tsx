@@ -1,8 +1,10 @@
 import { Check, Pill } from "lucide-react";
 import { useMedicationStore } from "../store/useMedicationStore";
+import { useActivities } from "../store/useActivities";
 
 export function ScheduleList() {
   const { medications, toggleTaken } = useMedicationStore();
+  const addActivity = useActivities((state) => state.addActivity);
 
   const sortedMeds = [...medications].sort((a, b) =>
     a.scheduledTime.localeCompare(b.scheduledTime),
@@ -37,7 +39,16 @@ export function ScheduleList() {
           </div>
 
           <button
-            onClick={() => toggleTaken(med.id)}
+            onClick={() => {
+              if (!med.takenToday) {
+                addActivity({
+                  type: "medication",
+                  description: `Remédio ${med.name} marcado como ingerido`,
+                  metadata: { medicationId: med.id },
+                });
+              }
+              toggleTaken(med.id);
+            }}
             className={`cursor-pointer px-5 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 transition-all ${
               med.takenToday
                 ? "bg-[#E2F0D9] text-[#4E7A3A]"
