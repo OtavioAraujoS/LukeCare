@@ -22,16 +22,41 @@ export const useActivities = create<ActivityState>()(
       activities: [],
 
       addActivity: (activity) =>
-        set((state) => ({
-          activities: [
-            ...state.activities,
-            {
-              ...activity,
-              id: crypto.randomUUID(),
-              timestamp: new Date().toISOString(),
-            },
-          ],
-        })),
+        set((state) => {
+          const today = new Date().toISOString().slice(0, 10);
+          const medicationId = activity.metadata?.medicationId as
+            | string
+            | undefined;
+
+          const isDuplicate = state.activities.some((existing) => {
+            const existingDate = existing.timestamp.slice(0, 10);
+            const sameMedication = medicationId
+              ? existing.metadata?.medicationId === medicationId
+              : true;
+
+            return (
+              existing.type === activity.type &&
+              existing.description === activity.description &&
+              existingDate === today &&
+              sameMedication
+            );
+          });
+
+          if (isDuplicate) {
+            return state;
+          }
+
+          return {
+            activities: [
+              ...state.activities,
+              {
+                ...activity,
+                id: crypto.randomUUID(),
+                timestamp: new Date().toISOString(),
+              },
+            ],
+          };
+        }),
 
       removeActivity: (id) =>
         set((state) => ({
