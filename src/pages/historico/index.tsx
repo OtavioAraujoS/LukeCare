@@ -55,15 +55,14 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="px-16 py-12 max-w-5xl mx-auto w-full relative min-h-screen">
+    <div className="px-6 py-8 md:px-16 md:py-12 max-w-5xl mx-auto w-full relative min-h-screen">
       <header className="mb-10">
-        <h1 className="text-5xl font-extrabold text-[#3B362E] tracking-tight mb-2">
+        <h1 className="text-3xl md:text-5xl font-extrabold text-[#3B362E] tracking-tight mb-3">
           Remedy Logs
         </h1>
-        <p className="text-gray-400 font-medium">
+        <p className="text-gray-500 text-sm md:text-base font-medium leading-relaxed">
           Acompanhe o histórico completo das atividades relacionadas aos
-          remédios do Luke, incluindo registros de medicação, exercícios e
-          outras ações importantes para o cuidado diário.
+          remédios do Luke.
         </p>
       </header>
 
@@ -81,9 +80,12 @@ export default function HistoryPage() {
 
             <div className="flex flex-col gap-6">
               {items.map((item) => (
-                <div key={item.id} className="flex items-start gap-8 w-full">
-                  <div className="w-20 pt-6 text-right shrink-0">
-                    <span className="text-sm font-bold text-[#3B362E] opacity-60">
+                <div
+                  key={item.id}
+                  className="flex flex-col md:flex-row items-start gap-3 md:gap-8 w-full"
+                >
+                  <div className="md:w-20 md:pt-6 md:text-right shrink-0">
+                    <span className="text-xs md:text-sm font-bold text-[#3B362E] opacity-60">
                       {new Date(item.timestamp).toLocaleTimeString("pt-BR", {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -91,19 +93,19 @@ export default function HistoryPage() {
                     </span>
                   </div>
 
-                  <div className="flex-1 bg-[#FDFCF9] rounded-[2.5rem] p-6 border border-gray-50 shadow-sm flex items-center gap-6 relative group hover:shadow-md transition-shadow">
-                    <div className="w-14 h-14 rounded-full bg-[#F5F3ED] flex items-center justify-center shrink-0">
-                      <Pill size={20} className="text-[#65584D]" />
+                  <div className="flex-1 w-full bg-[#FDFCF9] rounded-3xl md:rounded-[2.5rem] p-5 md:p-6 border border-gray-100 shadow-sm flex items-center gap-4 md:gap-6 relative group hover:shadow-md transition-shadow">
+                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#F5F3ED] flex items-center justify-center shrink-0">
+                      <Pill size={18} className="text-[#65584D]" />
                     </div>
 
                     <div className="flex-1">
-                      <div className="flex justify-between items-start">
+                      <div className="flex justify-between items-start gap-2">
                         <div>
-                          <h4 className="text-lg font-bold text-[#3B362E] leading-tight">
+                          <h4 className="text-base md:text-lg font-bold text-[#3B362E] leading-tight">
                             {item.description}
                           </h4>
                           <div className="flex gap-2 mt-2">
-                            <span className="text-[10px] font-bold bg-[#F5F3ED] text-[#65584D] px-3 py-1 rounded-full uppercase tracking-wide">
+                            <span className="text-[9px] md:text-[10px] font-bold bg-[#F5F3ED] text-[#65584D] px-3 py-1 rounded-full uppercase tracking-wide">
                               {item.type === "medication"
                                 ? "Medicação"
                                 : "Exercício"}
@@ -113,9 +115,13 @@ export default function HistoryPage() {
 
                         <button
                           onClick={() => removeActivity(item.id)}
-                          className="p-4 cursor-pointer"
+                          className="p-2 md:p-4 cursor-pointer hover:bg-red-50 rounded-full transition-colors shrink-0"
+                          aria-label="Excluir registro"
                         >
-                          <Trash2 size={18} className="text-red-500" />
+                          <Trash2
+                            size={18}
+                            className="text-red-400 hover:text-red-600"
+                          />
                         </button>
                       </div>
                     </div>
