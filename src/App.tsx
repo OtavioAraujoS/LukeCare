@@ -15,7 +15,7 @@ export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <div className="flex h-screen bg-white font-sans overflow-hidden text-[#3B362E]">
         <Sidebar setIsModalOpen={setIsModalOpen} />
 
