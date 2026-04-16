@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import Pages from "vite-plugin-pages";
 
 export default defineConfig({
+  base: "/LukeCare/",
   plugins: [
     react(),
     tailwindcss(),
