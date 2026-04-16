@@ -21,9 +21,11 @@ export function Sidebar({ setIsModalOpen }: SidebarProps) {
       </h1>
 
       <div className="flex items-center gap-4 mb-10">
-        <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xl overflow-hidden shadow-inner border-2 border-white">
-          🐶
-        </div>
+        <img
+          src="/luke.png"
+          alt="Avatar do Luke"
+          className="size-20 rounded-full object-cover"
+        />
         <div>
           <p className="font-extrabold text-[#3B362E] text-lg leading-none mb-1">
             Luke
