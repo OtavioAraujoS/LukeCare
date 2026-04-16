@@ -15,7 +15,7 @@ export function Sidebar({ setIsModalOpen }: SidebarProps) {
       : `${baseItemClass} font-bold text-gray-400 hover:text-gray-800 hover:bg-gray-50/50`; // Estilo Inativo
   };
   return (
-    <aside className="w-72 flex flex-col border-r border-gray-100 p-8 pb-10">
+    <aside className="hidden w-72 md:flex flex-col border-r border-gray-100 p-8 pb-10">
       <h1 className="text-2xl font-extrabold tracking-tight mb-10 text-[#3B362E]">
         LukeCare
       </h1>

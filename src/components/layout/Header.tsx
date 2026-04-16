@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 export function Header() {
   const baseStyle =
-    "text-sm font-bold transition-all duration-200 pb-1 border-b-2";
+    "text-xs font-bold transition-all duration-200 pb-1 border-b-2 md:text-sm";
 
   const getNavLinkStyle = ({ isActive }: { isActive: boolean }) =>
     isActive
