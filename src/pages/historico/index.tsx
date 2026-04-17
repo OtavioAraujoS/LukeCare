@@ -1,9 +1,10 @@
 import { useState, useMemo } from "react";
 import { Pill, Trash2 } from "lucide-react";
 import { useActivities, type Activity } from "../../store/useActivities";
+import { Loading } from "../../components/Loading";
 
 export default function HistoryPage() {
-  const { activities, removeActivity } = useActivities();
+  const { activities, removeActivity, isLoading } = useActivities();
   const [activeFilter] = useState("all");
 
   const groupedActivities = useMemo(() => {
@@ -33,6 +34,11 @@ export default function HistoryPage() {
 
     return groups;
   }, [activities, activeFilter]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   if (Object.keys(groupedActivities).length === 0) {
     return (
       <div className="h-screen px-16 py-12 max-w-5xl mx-auto w-full relative min-h-screen flex flex-col items-center justify-center gap-6">

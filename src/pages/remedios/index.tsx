@@ -3,10 +3,15 @@ import { RemedyCard } from "../../components/medicacoes/RemedyCard";
 import { RemedyHeader } from "../../components/medicacoes/RemedyHeader";
 import { RemedyForm } from "../../components/medicacoes/RemedyForm";
 import { Pill } from "lucide-react";
+import { Loading } from "../../components/Loading";
 
 export default function RemedyLibrary() {
-  const { medications, addMedication, removeMedication } = useMedicationStore();
+  const { medications, addMedication, removeMedication, isLoading } =
+    useMedicationStore();
 
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="px-6 py-8 md:px-16 md:py-10 max-w-6xl mx-auto w-full">
       <RemedyHeader medicationsLength={medications.length} />
