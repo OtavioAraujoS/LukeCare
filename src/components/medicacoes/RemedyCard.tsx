@@ -31,6 +31,8 @@ export function RemedyCard({ medications, removeMedication }: RemedyCardProps) {
     );
   }
 
+  console.log("Renderizando RemedyCard com medicamentos:", medications);
+
   return (
     <section className="w-full">
       <div className="flex justify-between items-center mb-8">
@@ -43,9 +45,9 @@ export function RemedyCard({ medications, removeMedication }: RemedyCardProps) {
         {medications.map((med) => (
           <div
             key={med.id}
-            className="flex flex-col bg-white border border-gray-100 rounded-[2.5rem] p-8 shadow-sm hover:shadow-md transition-shadow relative h-full"
+            className="flex flex-col gap-4 bg-white border border-gray-100 rounded-[2.5rem] p-8 shadow-sm hover:shadow-md transition-shadow relative h-full"
           >
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex justify-between items-start">
               <div className="size-12 rounded-full bg-[#F5F3ED] flex items-center justify-center">
                 <Pill className="text-[#65584D]" size={22} />
               </div>
@@ -58,7 +60,7 @@ export function RemedyCard({ medications, removeMedication }: RemedyCardProps) {
               </button>
             </div>
 
-            <div className="flex flex-col gap-1 mb-6">
+            <div className="flex flex-col gap-1 mb-2">
               <h4 className="text-lg md:text-2xl font-extrabold text-[#3B362E] leading-tight min-h-14">
                 {med.name}
               </h4>
@@ -67,7 +69,7 @@ export function RemedyCard({ medications, removeMedication }: RemedyCardProps) {
               </p>
             </div>
 
-            <div className="space-y-4 mb-8">
+            <div className="space-y-4">
               <div className="flex justify-between items-center text-sm border-b border-gray-50 pb-3">
                 <span className="text-gray-400 font-bold">Dosagem</span>
                 <span className="font-extrabold text-[#3B362E]">
@@ -78,6 +80,21 @@ export function RemedyCard({ medications, removeMedication }: RemedyCardProps) {
                 <span className="text-gray-400 font-bold">Horário</span>
                 <span className="font-extrabold text-[#3B362E]">
                   {med.scheduledTime}
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex justify-between items-center text-sm border-b border-gray-50 pb-3">
+                <span className="text-gray-400 font-bold">Começo</span>
+                <span className="font-extrabold text-[#3B362E]">
+                  {new Date(med.startDate).toLocaleDateString()}
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-sm border-b border-gray-50 pb-3">
+                <span className="text-gray-400 font-bold">Fim</span>
+                <span className="font-extrabold text-[#3B362E]">
+                  {new Date(med.endDate).toLocaleDateString()}
                 </span>
               </div>
             </div>

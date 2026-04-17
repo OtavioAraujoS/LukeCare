@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCircle2, ChevronDown } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import type { Medication } from "../../store/useMedicationStore";
 
 export function RemedyForm({
@@ -10,28 +10,34 @@ export function RemedyForm({
   const [formData, setFormData] = useState({
     name: "",
     dosage: "",
-    scheduledTime: "08:00",
-    frequency: "Daily",
+    scheduledTime: "",
+    startDate: "",
+    endDate: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.dosage) return;
+    try {
+      e.preventDefault();
+      if (!formData.name || !formData.dosage) return;
 
-    addMedication({
-      name: formData.name,
-      dosage: formData.dosage,
-      scheduledTime: formData.scheduledTime,
-      startDate: new Date().toISOString(),
-      endDate: "",
-    });
+      addMedication({
+        name: formData.name,
+        dosage: formData.dosage,
+        scheduledTime: formData.scheduledTime,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+      });
 
-    setFormData({
-      name: "",
-      dosage: "",
-      scheduledTime: "08:00",
-      frequency: "Daily",
-    });
+      setFormData({
+        name: "",
+        dosage: "",
+        scheduledTime: "",
+        startDate: "",
+        endDate: "",
+      });
+    } catch (error) {
+      console.error("Erro ao adicionar medicação:", error);
+    }
   };
   return (
     <form
@@ -41,7 +47,7 @@ export function RemedyForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 mb-8">
         <div className="flex flex-col gap-2">
           <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]">
-            Nome do Remédio
+            Nome
           </label>
           <input
             type="text"
@@ -49,23 +55,8 @@ export function RemedyForm({
             className="bg-white border border-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#F1DECE] transition-all"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            required
           />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]">
-            Tipo
-          </label>
-          <div className="relative">
-            <select className="w-full bg-white border border-gray-100 rounded-xl px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-[#F1DECE] cursor-pointer">
-              <option>Cápsula</option>
-              <option>Líquido</option>
-              <option>Comestível</option>
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
-              <ChevronDown size={16} />
-            </div>
-          </div>
         </div>
 
         <div className="flex flex-col gap-2">
@@ -80,20 +71,39 @@ export function RemedyForm({
             onChange={(e) =>
               setFormData({ ...formData, dosage: e.target.value })
             }
+            required
           />
         </div>
-
-        <div className="flex flex-col gap-2">
-          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]">
-            Frequência
+        <div>
+          <label className="text-sm font-bold text-gray-500 mb-1 block">
+            Início
           </label>
           <input
-            type="text"
-            placeholder="Diário, Semanal..."
-            className="bg-white border border-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#F1DECE]"
+            name="startDate"
+            type="date"
+            required
+            value={formData.startDate}
+            onChange={(e) =>
+              setFormData({ ...formData, startDate: e.target.value })
+            }
+            className="w-full p-3 bg-[#F9F8F6] border border-transparent focus:border-[#E8E4DA] focus:bg-white rounded-xl outline-none transition-all"
           />
         </div>
-
+        <div>
+          <label className="text-sm font-bold text-gray-500 mb-1 block">
+            Fim
+          </label>
+          <input
+            name="endDate"
+            type="date"
+            required
+            value={formData.endDate}
+            onChange={(e) =>
+              setFormData({ ...formData, endDate: e.target.value })
+            }
+            className="w-full p-3 bg-[#F9F8F6] border border-transparent focus:border-[#E8E4DA] focus:bg-white rounded-xl outline-none transition-all"
+          />
+        </div>
         <div className="flex flex-col gap-2 col-span-1 sm:col-span-2">
           <label className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]">
             Horário Agendado
@@ -106,6 +116,7 @@ export function RemedyForm({
               onChange={(e) =>
                 setFormData({ ...formData, scheduledTime: e.target.value })
               }
+              required
             />
           </div>
         </div>
