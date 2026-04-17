@@ -33,7 +33,6 @@ export default function HistoryPage() {
 
     return groups;
   }, [activities, activeFilter]);
-
   if (Object.keys(groupedActivities).length === 0) {
     return (
       <div className="h-screen px-16 py-12 max-w-5xl mx-auto w-full relative min-h-screen flex flex-col items-center justify-center gap-6">
@@ -53,7 +52,6 @@ export default function HistoryPage() {
       </div>
     );
   }
-
   return (
     <div className="px-6 py-8 md:px-16 md:py-12 max-w-5xl mx-auto w-full relative min-h-screen">
       <header className="mb-10">

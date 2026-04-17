@@ -1,5 +1,4 @@
 "use client";
-import { useEffect } from "react";
 import {
   useMedicationStore,
   type Medication,
@@ -19,12 +18,6 @@ export function EditRemedyModal({
     (state) => state.updateMedication,
   );
 
-  useEffect(() => {
-    if (isOpen && remedy) {
-      console.log("Editando o remédio:", remedy.name);
-    }
-  }, [isOpen, remedy]);
-
   if (!isOpen || !remedy) return null;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -41,7 +34,6 @@ export function EditRemedyModal({
 
     onClose();
   };
-
   return (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <MedicationForm

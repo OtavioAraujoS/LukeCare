@@ -30,9 +30,6 @@ export function RemedyCard({ medications, removeMedication }: RemedyCardProps) {
       </div>
     );
   }
-
-  console.log("Renderizando RemedyCard com medicamentos:", medications);
-
   return (
     <section className="w-full">
       <div className="flex justify-between items-center mb-8">

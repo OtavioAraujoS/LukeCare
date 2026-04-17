@@ -1,11 +1,21 @@
 import { useMedicationStore } from "../store/useMedicationStore";
+import { useActivities } from "../store/useActivities";
 
 export function ProgressCard() {
   const medications = useMedicationStore((state) => state.medications);
+  const activities = useActivities((state) => state.activities);
+  const today = new Date().toISOString().slice(0, 10);
   const total = medications.length;
-  const taken = medications.filter((m) => m.takenToday).length;
-  const percentage = total === 0 ? 0 : Math.round((taken / total) * 100);
 
+  const taken = medications.filter((med) =>
+    activities.some(
+      (act) =>
+        act.type === "medication" &&
+        act.metadata?.medicationId === med.id &&
+        act.timestamp.slice(0, 10) === today,
+    ),
+  ).length;
+  const percentage = total === 0 ? 0 : Math.round((taken / total) * 100);
   return (
     <div className="bg-[#F5F3ED] rounded-3xl lg:rounded-4xl p-6 lg:p-8 flex flex-col items-center justify-center shadow-sm">
       <p className="text-[10px] lg:text-xs font-bold text-gray-500 tracking-widest uppercase mb-6 lg:mb-8">
@@ -13,7 +23,7 @@ export function ProgressCard() {
       </p>
 
       <div
-        className="w-32 h-32 lg:w-40 lg:h-40 rounded-full flex items-center justify-center mb-6 lg:mb-8 relative"
+        className="w-32 h-32 lg:w-40 lg:h-40 rounded-full flex items-center justify-center mb-6 lg:mb-8 relative transition-all duration-500"
         style={{
           background: `conic-gradient(#5C5446 ${percentage}%, #E3DFD5 0)`,
         }}
@@ -29,7 +39,11 @@ export function ProgressCard() {
       </div>
 
       <p className="text-xs lg:text-sm text-center font-medium text-[#7A7369] px-2 leading-relaxed">
-        {percentage === 100 ? "Tudo certo! Rotina concluída." : "Falta pouco!"}
+        {percentage === 100
+          ? "Excelente! Todos os cuidados de hoje foram concluídos."
+          : percentage > 50
+            ? "Mais da metade já foi! Falta pouco."
+            : "Vamos começar os cuidados de hoje?"}
       </p>
     </div>
   );

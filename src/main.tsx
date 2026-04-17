@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import { toast } from "sonner";
 
 const rootElement = document.getElementById("root");
 
@@ -12,5 +13,5 @@ if (rootElement) {
     </React.StrictMode>,
   );
 } else {
-  console.error("Erro crítico: Não encontrei o elemento #root no HTML");
+  toast.error("Erro crítico: Não encontrei o elemento #root no HTML");
 }

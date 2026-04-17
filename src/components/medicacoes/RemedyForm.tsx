@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import type { Medication } from "../../store/useMedicationStore";
+import { toast } from "sonner";
 
 export function RemedyForm({
   addMedication,
@@ -35,8 +36,11 @@ export function RemedyForm({
         startDate: "",
         endDate: "",
       });
+      toast.success("Medicação adicionada com sucesso!");
     } catch (error) {
-      console.error("Erro ao adicionar medicação:", error);
+      toast.error("Erro ao adicionar medicação:", {
+        description: String(error),
+      });
     }
   };
   return (

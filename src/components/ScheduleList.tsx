@@ -1,73 +1,92 @@
 import { Check, Pill } from "lucide-react";
-import { useMedicationStore } from "../store/useMedicationStore";
+import {
+  useMedicationStore,
+  type Medication,
+} from "../store/useMedicationStore";
 import { useActivities } from "../store/useActivities";
+import { toast } from "sonner";
 
 export function ScheduleList() {
-  const { medications, toggleTaken } = useMedicationStore();
-  const addActivity = useActivities((state) => state.addActivity);
+  const { medications } = useMedicationStore();
+  const { activities, addActivity } = useActivities();
 
   const sortedMeds = [...medications].sort((a, b) =>
     a.scheduledTime.localeCompare(b.scheduledTime),
   );
 
-  if (medications.length === 0) {
-    return (
-      <div className="text-gray-400 p-8 text-center bg-[#F9F8F6] rounded-3xl border border-dashed border-gray-300">
-        Nenhum remédio cadastrado para hoje.
-      </div>
+  const isMedicationTakenToday = (medId: string) => {
+    const today = new Date().toISOString().slice(0, 10);
+    return activities.some(
+      (activity) =>
+        activity.metadata?.medicationId === medId &&
+        activity.timestamp.slice(0, 10) === today &&
+        activity.type === "medication",
     );
+  };
+
+  async function handleAction(medication: Medication) {
+    const taken = isMedicationTakenToday(medication.id);
+
+    if (!taken) {
+      const newId = await addActivity({
+        type: "medication",
+        description: `Remédio ${medication.name} marcado como ingerido`,
+        metadata: { medicationId: medication.id },
+      });
+
+      if (newId) {
+        toast.success(`${medication.name} registrado!`);
+      }
+    } else {
+      toast.info("Este medicamento já foi registrado hoje.");
+    }
   }
   return (
     <div className="flex flex-col gap-4">
-      {sortedMeds.map((med) => (
-        <div
-          key={med.id}
-          className="bg-[#F9F8F6] p-4 pr-6 rounded-4xl flex items-center justify-between shadow-sm transition-all hover:bg-[#f3f1eb]"
-        >
-          <div className="flex items-center gap-5">
-            <div className="w-14 h-14 bg-[#E8E4DA] rounded-2xl flex items-center justify-center text-[#8C7E6A] shrink-0">
-              <Pill size={24} />
-            </div>
-            <div>
-              <h4 className="font-bold text-[#3E3831] text-lg mb-0.5">
-                {med.name}
-              </h4>
-              <p className="text-sm text-gray-500 font-medium">
-                {med.scheduledTime} • {med.dosage}
-              </p>
-            </div>
-          </div>
+      {sortedMeds.map((med) => {
+        const isTaken = isMedicationTakenToday(med.id);
 
-          <button
-            onClick={() => {
-              if (!med.takenToday) {
-                addActivity({
-                  type: "medication",
-                  description: `Remédio ${med.name} marcado como ingerido`,
-                  metadata: { medicationId: med.id },
-                });
-              }
-              toggleTaken(med.id);
-            }}
-            className={`cursor-pointer px-5 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 transition-all ${
-              med.takenToday
-                ? "bg-[#E2F0D9] text-[#4E7A3A]"
-                : "bg-[#EAE5D9] text-[#635A4D] hover:bg-[#dcd6c8]"
-            }`}
+        return (
+          <div
+            key={med.id}
+            className="bg-[#F9F8F6] p-4 pr-6 rounded-4xl flex items-center justify-between shadow-sm transition-all hover:bg-[#f3f1eb]"
           >
-            {med.takenToday ? (
-              <>
-                <span className="mr-1">ADMINISTRADO</span>
-                <div className="bg-[#4CAF50] text-white rounded-full p-0.5 shadow-sm">
-                  <Check size={14} strokeWidth={3} />
-                </div>
-              </>
-            ) : (
-              "Marcar como ingerido"
-            )}
-          </button>
-        </div>
-      ))}
+            <div className="flex items-center gap-5">
+              <div className="w-14 h-14 bg-[#E8E4DA] rounded-2xl flex items-center justify-center text-[#8C7E6A] shrink-0">
+                <Pill size={24} />
+              </div>
+              <div>
+                <h4 className="font-bold text-[#3E3831] text-lg mb-0.5">
+                  {med.name}
+                </h4>
+                <p className="text-sm text-gray-500 font-medium">
+                  {med.scheduledTime} • {med.dosage}
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => handleAction(med)}
+              className={`cursor-pointer px-5 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 transition-all ${
+                isTaken
+                  ? "bg-[#E2F0D9] text-[#4E7A3A]"
+                  : "bg-[#EAE5D9] text-[#635A4D] hover:bg-[#dcd6c8]"
+              }`}
+            >
+              {isTaken ? (
+                <>
+                  <span className="mr-1">ADMINISTRADO</span>
+                  <div className="bg-[#4CAF50] text-white rounded-full p-0.5 shadow-sm">
+                    <Check size={14} strokeWidth={3} />
+                  </div>
+                </>
+              ) : (
+                "Marcar como ingerido"
+              )}
+            </button>
+          </div>
+        );
+      })}
     </div>
   );
 }

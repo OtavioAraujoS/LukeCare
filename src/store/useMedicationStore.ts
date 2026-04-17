@@ -8,6 +8,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { toast } from "sonner";
 
 export interface Medication {
   id: string;
@@ -47,7 +48,9 @@ export const useMedicationStore = create<MedicationState>((set, get) => ({
         set({ medications: docs, isLoading: false });
       },
       (error) => {
-        console.error("❌ Erro ao carregar medicamentos:", error.message);
+        toast.error("❌ Erro ao carregar medicamentos:", {
+          description: error.message,
+        });
       },
     );
   },
@@ -64,22 +67,29 @@ export const useMedicationStore = create<MedicationState>((set, get) => ({
         takenToday: false,
       });
     } else {
-      console.warn("⚠️ Este medicamento já está cadastrado.");
+      toast.warning("⚠️ Este medicamento já está cadastrado.", {
+        description: "Por favor, verifique se o medicamento já foi adicionado.",
+      });
     }
   },
 
   updateMedication: async (id: string, updatedFields: Partial<Medication>) => {
     try {
       if (!get().medications.some((m) => m.id === id)) {
-        console.warn(
+        toast.warning(
           "⚠️ Não foi possível encontrar o medicamento para atualizar.",
+          {
+            description: "Por favor, verifique se o medicamento existe.",
+          },
         );
         return;
       }
       const docRef = doc(db, "medications", id);
       await updateDoc(docRef, updatedFields);
     } catch (error) {
-      console.error("❌ Erro ao atualizar medicamento:", error);
+      toast.error("❌ Erro ao atualizar medicamento:", {
+        description: String(error),
+      });
     }
   },
 

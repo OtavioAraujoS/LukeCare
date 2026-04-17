@@ -9,8 +9,10 @@ import {
   orderBy,
   writeBatch,
   getDocs,
+  where,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { toast } from "sonner";
 
 export interface Activity {
   id: string;
@@ -24,7 +26,9 @@ interface ActivityState {
   activities: Activity[];
   isLoading: boolean;
   subscribeToActivities: () => () => void;
-  addActivity: (activity: Omit<Activity, "id" | "timestamp">) => Promise<void>;
+  addActivity: (
+    activity: Omit<Activity, "id" | "timestamp"> & { timestamp?: string },
+  ) => Promise<string | null>;
   removeActivity: (id: string) => Promise<void>;
   clearActivities: () => Promise<void>;
 }
@@ -34,7 +38,16 @@ export const useActivities = create<ActivityState>((set, get) => ({
   isLoading: true,
 
   subscribeToActivities: () => {
-    const q = query(collection(db, "activities"), orderBy("timestamp", "desc"));
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const minTimestamp = thirtyDaysAgo.toISOString();
+
+    const q = query(
+      collection(db, "activities"),
+      where("timestamp", ">=", minTimestamp),
+      orderBy("timestamp", "desc"),
+    );
+
     return onSnapshot(
       q,
       (snapshot) => {
@@ -45,36 +58,51 @@ export const useActivities = create<ActivityState>((set, get) => ({
         set({ activities: docs, isLoading: false });
       },
       (error) => {
-        console.error("❌ Erro nas Atividades:", error.message);
+        toast.error("❌ Erro nas Atividades:", {
+          description: error.message,
+        });
       },
     );
   },
 
-  addActivity: async (activity) => {
+  addActivity: async (activityData) => {
     const { activities } = get();
-    const today = new Date().toISOString().slice(0, 10);
-    const medicationId = activity.metadata?.medicationId;
+    const targetTimestamp = activityData.timestamp || new Date().toISOString();
+    const targetDateOnly = targetTimestamp.slice(0, 10);
+    const medicationId = activityData.metadata?.medicationId;
 
     const isDuplicate = activities.some((existing) => {
-      const existingDate = existing.timestamp.slice(0, 10);
-      const sameMedication = medicationId
-        ? existing.metadata?.medicationId === medicationId
-        : true;
+      const existingDateOnly = existing.timestamp.slice(0, 10);
       return (
-        existing.type === activity.type &&
-        existing.description === activity.description &&
-        existingDate === today &&
-        sameMedication
+        existingDateOnly === targetDateOnly &&
+        existing.type === activityData.type &&
+        (medicationId
+          ? existing.metadata?.medicationId === medicationId
+          : existing.description === activityData.description)
       );
     });
 
-    if (!isDuplicate) {
-      await addDoc(collection(db, "activities"), {
-        ...activity,
-        timestamp: new Date().toISOString(),
+    if (isDuplicate) {
+      toast.warning(
+        "🚫 Atividade ignorada: Já existe registro para este item hoje.",
+        {
+          description: "Por favor, verifique se a atividade já foi registrada.",
+        },
+      );
+      return null;
+    }
+
+    try {
+      const docRef = await addDoc(collection(db, "activities"), {
+        ...activityData,
+        timestamp: targetTimestamp,
       });
-    } else {
-      console.warn("⚠️ Atividade duplicada ignorada.");
+      return docRef.id;
+    } catch (error) {
+      toast.error("❌ Erro técnico ao salvar no Firebase:", {
+        description: String(error),
+      });
+      throw error;
     }
   },
 

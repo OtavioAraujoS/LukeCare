@@ -7,6 +7,7 @@ import { Sidebar } from "./components/layout/Sidebar";
 import { AddMedicationModal } from "./components/AddMedicationModal";
 import { useMedicationStore } from "./store/useMedicationStore";
 import { useActivities } from "./store/useActivities";
+import { Toaster } from "sonner";
 
 function AppRoutes() {
   const element = useRoutes(routes);
@@ -42,6 +43,7 @@ export default function App() {
             }
           >
             <AppRoutes />
+            <Toaster position="bottom-right" />
           </Suspense>
         </main>
 
