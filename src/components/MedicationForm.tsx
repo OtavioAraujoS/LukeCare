@@ -1,11 +1,16 @@
 import { X } from "lucide-react";
+import type { Medication } from "../store/useMedicationStore";
 
 export function MedicationForm({
   onClose,
   handleSubmit,
+  remedy,
+  isEditing = false,
 }: {
   onClose: () => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  remedy?: Medication;
+  isEditing?: boolean;
 }) {
   return (
     <form
@@ -13,7 +18,9 @@ export function MedicationForm({
       className="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md animate-in fade-in zoom-in-95 duration-200"
     >
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-bold text-[#3B362E]">Novo Remédio</h3>
+        <h3 className="text-xl font-bold text-[#3B362E]">
+          {isEditing ? "Editar Remédio" : "Novo Remédio"}
+        </h3>
         <button
           type="button"
           onClick={onClose}
@@ -26,11 +33,12 @@ export function MedicationForm({
       <div className="grid grid-cols-2 gap-4">
         <div className="col-span-2">
           <label className="text-sm font-bold text-gray-500 mb-1 block">
-            Nome da Medicação
+            Nome
           </label>
           <input
             name="name"
             required
+            defaultValue={remedy?.name}
             placeholder="Ex: Bravecto"
             className="w-full p-3 bg-[#F9F8F6] border border-transparent focus:border-[#E8E4DA] focus:bg-white rounded-xl outline-none transition-all"
           />
@@ -42,6 +50,7 @@ export function MedicationForm({
           <input
             name="dosage"
             required
+            defaultValue={remedy?.dosage}
             placeholder="Ex: 1 comp."
             className="w-full p-3 bg-[#F9F8F6] border border-transparent focus:border-[#E8E4DA] focus:bg-white rounded-xl outline-none transition-all"
           />
@@ -54,28 +63,31 @@ export function MedicationForm({
             name="time"
             type="time"
             required
+            defaultValue={remedy?.scheduledTime}
             className="w-full p-3 bg-[#F9F8F6] border border-transparent focus:border-[#E8E4DA] focus:bg-white rounded-xl outline-none transition-all"
           />
         </div>
         <div>
           <label className="text-sm font-bold text-gray-500 mb-1 block">
-            Data de Início
+            Início
           </label>
           <input
             name="startDate"
             type="date"
             required
+            defaultValue={remedy?.startDate}
             className="w-full p-3 bg-[#F9F8F6] border border-transparent focus:border-[#E8E4DA] focus:bg-white rounded-xl outline-none transition-all"
           />
         </div>
         <div>
           <label className="text-sm font-bold text-gray-500 mb-1 block">
-            Data de Fim
+            Fim
           </label>
           <input
             name="endDate"
             type="date"
             required
+            defaultValue={remedy?.endDate}
             className="w-full p-3 bg-[#F9F8F6] border border-transparent focus:border-[#E8E4DA] focus:bg-white rounded-xl outline-none transition-all"
           />
         </div>
@@ -85,7 +97,7 @@ export function MedicationForm({
         type="submit"
         className="cursor-pointer w-full mt-8 py-4 bg-[#635A4D] hover:bg-[#4E463C] text-white font-bold rounded-2xl transition-colors"
       >
-        Cadastrar
+        {isEditing ? "Salvar Alterações" : "Cadastrar"}
       </button>
     </form>
   );

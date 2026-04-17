@@ -26,6 +26,10 @@ interface MedicationState {
   addMedication: (med: Omit<Medication, "id" | "takenToday">) => Promise<void>;
   removeMedication: (id: string) => Promise<void>;
   toggleTaken: (id: string) => Promise<void>;
+  updateMedication: (
+    id: string,
+    updatedFields: Partial<Medication>,
+  ) => Promise<void>;
 }
 
 export const useMedicationStore = create<MedicationState>((set, get) => ({
@@ -61,6 +65,21 @@ export const useMedicationStore = create<MedicationState>((set, get) => ({
       });
     } else {
       console.warn("⚠️ Este medicamento já está cadastrado.");
+    }
+  },
+
+  updateMedication: async (id: string, updatedFields: Partial<Medication>) => {
+    try {
+      if (!get().medications.some((m) => m.id === id)) {
+        console.warn(
+          "⚠️ Não foi possível encontrar o medicamento para atualizar.",
+        );
+        return;
+      }
+      const docRef = doc(db, "medications", id);
+      await updateDoc(docRef, updatedFields);
+    } catch (error) {
+      console.error("❌ Erro ao atualizar medicamento:", error);
     }
   },
 
