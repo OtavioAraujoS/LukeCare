@@ -1,5 +1,16 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  orderBy,
+  writeBatch,
+  getDocs,
+} from "firebase/firestore";
+import { db } from "../firebase";
 
 export interface Activity {
   id: string;
@@ -11,62 +22,71 @@ export interface Activity {
 
 interface ActivityState {
   activities: Activity[];
-  addActivity: (activity: Omit<Activity, "id" | "timestamp">) => void;
-  removeActivity: (id: string) => void;
-  clearActivities: () => void;
+  isLoading: boolean;
+  subscribeToActivities: () => () => void;
+  addActivity: (activity: Omit<Activity, "id" | "timestamp">) => Promise<void>;
+  removeActivity: (id: string) => Promise<void>;
+  clearActivities: () => Promise<void>;
 }
 
-export const useActivities = create<ActivityState>()(
-  persist(
-    (set) => ({
-      activities: [],
+export const useActivities = create<ActivityState>((set, get) => ({
+  activities: [],
+  isLoading: true,
 
-      addActivity: (activity) =>
-        set((state) => {
-          const today = new Date().toISOString().slice(0, 10);
-          const medicationId = activity.metadata?.medicationId as
-            | string
-            | undefined;
+  subscribeToActivities: () => {
+    const q = query(collection(db, "activities"), orderBy("timestamp", "desc"));
+    return onSnapshot(
+      q,
+      (snapshot) => {
+        const docs = snapshot.docs.map((d) => ({
+          id: d.id,
+          ...d.data(),
+        })) as Activity[];
+        set({ activities: docs, isLoading: false });
+      },
+      (error) => {
+        console.error("❌ Erro nas Atividades:", error.message);
+      },
+    );
+  },
 
-          const isDuplicate = state.activities.some((existing) => {
-            const existingDate = existing.timestamp.slice(0, 10);
-            const sameMedication = medicationId
-              ? existing.metadata?.medicationId === medicationId
-              : true;
+  addActivity: async (activity) => {
+    const { activities } = get();
+    const today = new Date().toISOString().slice(0, 10);
+    const medicationId = activity.metadata?.medicationId;
 
-            return (
-              existing.type === activity.type &&
-              existing.description === activity.description &&
-              existingDate === today &&
-              sameMedication
-            );
-          });
+    const isDuplicate = activities.some((existing) => {
+      const existingDate = existing.timestamp.slice(0, 10);
+      const sameMedication = medicationId
+        ? existing.metadata?.medicationId === medicationId
+        : true;
+      return (
+        existing.type === activity.type &&
+        existing.description === activity.description &&
+        existingDate === today &&
+        sameMedication
+      );
+    });
 
-          if (isDuplicate) {
-            return state;
-          }
+    if (!isDuplicate) {
+      await addDoc(collection(db, "activities"), {
+        ...activity,
+        timestamp: new Date().toISOString(),
+      });
+    } else {
+      console.warn("⚠️ Atividade duplicada ignorada.");
+    }
+  },
 
-          return {
-            activities: [
-              ...state.activities,
-              {
-                ...activity,
-                id: crypto.randomUUID(),
-                timestamp: new Date().toISOString(),
-              },
-            ],
-          };
-        }),
+  removeActivity: async (id) => {
+    await deleteDoc(doc(db, "activities", id));
+  },
 
-      removeActivity: (id) =>
-        set((state) => ({
-          activities: state.activities.filter((activity) => activity.id !== id),
-        })),
-
-      clearActivities: () => set({ activities: [] }),
-    }),
-    {
-      name: "luke-activities-storage",
-    },
-  ),
-);
+  clearActivities: async () => {
+    const q = query(collection(db, "activities"));
+    const snapshot = await getDocs(q);
+    const batch = writeBatch(db);
+    snapshot.docs.forEach((d) => batch.delete(d.ref));
+    await batch.commit();
+  },
+}));

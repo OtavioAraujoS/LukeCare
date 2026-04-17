@@ -1,5 +1,13 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "../firebase";
 
 export interface Medication {
   id: string;
@@ -13,38 +21,61 @@ export interface Medication {
 
 interface MedicationState {
   medications: Medication[];
-  addMedication: (med: Omit<Medication, "id" | "takenToday">) => void;
-  removeMedication: (id: string) => void;
-  toggleTaken: (id: string) => void;
+  isLoading: boolean;
+  subscribeToMedications: () => () => void;
+  addMedication: (med: Omit<Medication, "id" | "takenToday">) => Promise<void>;
+  removeMedication: (id: string) => Promise<void>;
+  toggleTaken: (id: string) => Promise<void>;
 }
 
-export const useMedicationStore = create<MedicationState>()(
-  persist(
-    (set) => ({
-      medications: [],
+export const useMedicationStore = create<MedicationState>((set, get) => ({
+  medications: [],
+  isLoading: true,
 
-      addMedication: (med) =>
-        set((state) => ({
-          medications: [
-            ...state.medications,
-            { ...med, id: crypto.randomUUID(), takenToday: false },
-          ],
-        })),
+  subscribeToMedications: () => {
+    return onSnapshot(
+      collection(db, "medications"),
+      (snapshot) => {
+        const docs = snapshot.docs.map((d) => ({
+          id: d.id,
+          ...d.data(),
+        })) as Medication[];
+        set({ medications: docs, isLoading: false });
+      },
+      (error) => {
+        console.error("❌ Erro ao carregar medicamentos:", error.message);
+      },
+    );
+  },
 
-      removeMedication: (id) =>
-        set((state) => ({
-          medications: state.medications.filter((m) => m.id !== id),
-        })),
+  addMedication: async (med) => {
+    const { medications } = get();
+    const alreadyExists = medications.some(
+      (m) => m.name.toLowerCase() === med.name.toLowerCase(),
+    );
 
-      toggleTaken: (id) =>
-        set((state) => ({
-          medications: state.medications.map((m) =>
-            m.id === id ? { ...m, takenToday: !m.takenToday } : m,
-          ),
-        })),
-    }),
-    {
-      name: "luke-meds-storage",
-    },
-  ),
-);
+    if (!alreadyExists) {
+      await addDoc(collection(db, "medications"), {
+        ...med,
+        takenToday: false,
+      });
+    } else {
+      console.warn("⚠️ Este medicamento já está cadastrado.");
+    }
+  },
+
+  removeMedication: async (id) => {
+    await deleteDoc(doc(db, "medications", id));
+  },
+
+  toggleTaken: async (id) => {
+    const medication = get().medications.find((m) => m.id === id);
+
+    if (medication) {
+      const docRef = doc(db, "medications", id);
+      await updateDoc(docRef, {
+        takenToday: !medication.takenToday,
+      });
+    }
+  },
+}));
