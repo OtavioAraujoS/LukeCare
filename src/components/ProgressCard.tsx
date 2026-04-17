@@ -17,13 +17,13 @@ export function ProgressCard() {
   ).length;
   const percentage = total === 0 ? 0 : Math.round((taken / total) * 100);
   return (
-    <div className="bg-[#F5F3ED] rounded-3xl lg:rounded-4xl p-6 lg:p-8 flex flex-col items-center justify-center shadow-sm">
-      <p className="text-[10px] lg:text-xs font-bold text-gray-500 tracking-widest uppercase mb-6 lg:mb-8">
+    <div className="h-full bg-[#F5F3ED] rounded-3xl lg:rounded-4xl p-6 lg:p-8 flex flex-col items-center justify-center shadow-sm">
+      <p className="text-sm lg:text-[1.2rem] text-center font-bold text-gray-500 tracking-widest uppercase mb-6 lg:mb-8">
         Progresso Diário
       </p>
 
       <div
-        className="w-32 h-32 lg:w-40 lg:h-40 rounded-full flex items-center justify-center mb-6 lg:mb-8 relative transition-all duration-500"
+        className="w-32 h-32 lg:w-36 lg:h-36 rounded-full flex items-center justify-center mb-6 lg:mb-8 relative transition-all duration-500"
         style={{
           background: `conic-gradient(#5C5446 ${percentage}%, #E3DFD5 0)`,
         }}
