@@ -102,7 +102,7 @@ export function AddMedicationModal({
 
         <button
           type="submit"
-          className="w-full mt-8 py-4 bg-[#635A4D] hover:bg-[#4E463C] text-white font-bold rounded-2xl transition-colors"
+          className="cursor-pointer w-full mt-8 py-4 bg-[#635A4D] hover:bg-[#4E463C] text-white font-bold rounded-2xl transition-colors"
         >
           Cadastrar
         </button>

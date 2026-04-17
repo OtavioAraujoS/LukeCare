@@ -88,7 +88,7 @@ export function Sidebar({ setIsModalOpen }: SidebarProps) {
 
       <button
         onClick={() => setIsModalOpen(true)}
-        className="w-full py-4 bg-[#635A4D] hover:bg-[#4E463C] text-white font-bold rounded-[1.25rem] flex items-center justify-center gap-2 shadow-md transition-all"
+        className="cursor-pointer w-full py-4 bg-[#635A4D] hover:bg-[#4E463C] text-white font-bold rounded-[1.25rem] flex items-center justify-center gap-2 shadow-md transition-all"
       >
         <Plus size={18} strokeWidth={3} /> Novo Remédio
       </button>
