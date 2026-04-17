@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import Pages from "vite-plugin-pages";
+import path from "path";
 
 export default defineConfig({
   plugins: [
@@ -12,4 +13,9 @@ export default defineConfig({
       extensions: ["tsx", "jsx"],
     }),
   ],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"), // 2. Adicione esta seção
+    },
+  },
 });

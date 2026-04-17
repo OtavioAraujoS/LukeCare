@@ -5,6 +5,9 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
-    "types": ["vite/client", "vite-plugin-pages/client-react"]
+    "types": ["vite/client", "vite-plugin-pages/client-react"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }
