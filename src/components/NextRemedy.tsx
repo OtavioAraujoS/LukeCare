@@ -2,6 +2,7 @@ import { useMedicationStore } from "../store/useMedicationStore";
 import { useActivities } from "../store/useActivities";
 import { Clock, Bell, AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
+import { getLocalDateString } from "../lib/utils";
 
 export function NextRemedy() {
   const { medications } = useMedicationStore();
@@ -13,14 +14,13 @@ export function NextRemedy() {
     return () => clearInterval(timer);
   }, []);
 
-  const today = now.toISOString().slice(0, 10);
-
+  const today = getLocalDateString(now);
   const remainingMeds = medications.filter((med) => {
     return !activities.some(
       (act) =>
         act.type === "medication" &&
         act.metadata?.medicationId === med.id &&
-        act.timestamp.slice(0, 10) === today,
+        getLocalDateString(new Date(act.timestamp)) === today,
     );
   });
 

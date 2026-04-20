@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { toast } from "sonner";
+import { getLocalDateString } from "../lib/utils";
 
 export interface Activity {
   id: string;
@@ -68,11 +69,11 @@ export const useActivities = create<ActivityState>((set, get) => ({
   addActivity: async (activityData) => {
     const { activities } = get();
     const targetTimestamp = activityData.timestamp || new Date().toISOString();
-    const targetDateOnly = targetTimestamp.slice(0, 10);
+    const targetDateOnly = getLocalDateString(new Date(targetTimestamp));
     const medicationId = activityData.metadata?.medicationId;
 
     const isDuplicate = activities.some((existing) => {
-      const existingDateOnly = existing.timestamp.slice(0, 10);
+      const existingDateOnly = getLocalDateString(new Date(existing.timestamp));
       return (
         existingDateOnly === targetDateOnly &&
         existing.type === activityData.type &&

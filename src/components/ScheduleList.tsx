@@ -5,6 +5,7 @@ import {
 } from "../store/useMedicationStore";
 import { useActivities } from "../store/useActivities";
 import { toast } from "sonner";
+import { getLocalDateString } from "../lib/utils";
 
 export function ScheduleList() {
   const { medications } = useMedicationStore();
@@ -15,11 +16,11 @@ export function ScheduleList() {
   );
 
   const isMedicationTakenToday = (medId: string) => {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getLocalDateString();
     return activities.some(
       (activity) =>
         activity.metadata?.medicationId === medId &&
-        activity.timestamp.slice(0, 10) === today &&
+        getLocalDateString(new Date(activity.timestamp)) === today &&
         activity.type === "medication",
     );
   };

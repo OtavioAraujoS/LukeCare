@@ -1,18 +1,18 @@
 import { useMedicationStore } from "../store/useMedicationStore";
 import { useActivities } from "../store/useActivities";
+import { getLocalDateString } from "../lib/utils";
 
 export function ProgressCard() {
   const medications = useMedicationStore((state) => state.medications);
   const activities = useActivities((state) => state.activities);
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getLocalDateString();
   const total = medications.length;
-
   const taken = medications.filter((med) =>
     activities.some(
       (act) =>
         act.type === "medication" &&
         act.metadata?.medicationId === med.id &&
-        act.timestamp.slice(0, 10) === today,
+        getLocalDateString(new Date(act.timestamp)) === today,
     ),
   ).length;
   const percentage = total === 0 ? 0 : Math.round((taken / total) * 100);
